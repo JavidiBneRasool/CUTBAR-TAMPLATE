@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { MessageCircle, Send, Search, Bell, Paperclip, Image, Mic, Smile, MoreVertical, ArrowDown, Upload, Link } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatMessage {
   id: string;
@@ -14,52 +17,38 @@ interface ChatMessage {
 }
 
 export default function Chat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      content: "Welcome to CUTBAR FINANCE community! Share your trading insights and market analysis here. 📈",
-      timestamp: "5 minutes ago",
-      author: "TraderPro",
-      avatar: "T",
-      color: "from-green-500 to-emerald-600"
-    },
-    {
-      id: "2",
-      content: "Just uploaded my latest market report. Check out the bullish trend on tech stocks! 📊",
-      timestamp: "3 minutes ago",
-      author: "MarketGuru",
-      avatar: "M",
-      color: "from-blue-500 to-cyan-600"
-    },
-    {
-      id: "3",
-      content: "Great analysis! I've shared a link to my portfolio performance dashboard for everyone to review.",
-      timestamp: "2 minutes ago",
-      author: "FinanceWiz",
-      avatar: "F",
-      color: "from-purple-500 to-pink-600"
-    },
-    {
-      id: "4",
-      content: "Love this community chat! Perfect for real-time financial discussions. Upload your charts and let's discuss! 💰",
-      timestamp: "1 minute ago",
-      author: "CryptoKing",
-      avatar: "C",
-      color: "from-orange-500 to-red-600"
-    },
-    {
-      id: "5",
-      content: "The live background animations make this chat so engaging! Ready to share some investment tips. 🦋",
-      timestamp: "Just now",
-      author: "InvestorAce",
-      avatar: "I",
-      color: "from-teal-500 to-blue-600"
-    }
-  ]);
-
   const [inputMessage, setInputMessage] = useState("");
-  const [isTyping, setIsTyping] = useState(true);
+  const [isTyping, setIsTyping] = useState(false);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Fetch messages from database
+  const { data: messages = [], isLoading } = useQuery<ChatMessage[]>({
+    queryKey: ['/api/messages'],
+    refetchInterval: 5000, // Refresh every 5 seconds for live updates
+  });
+
+  // Create message mutation
+  const createMessageMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const response = await apiRequest('POST', '/api/messages', {
+        content,
+        userId: 1 // Using TraderPro as default user for demo
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/messages'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
 
   const scrollToBottom = () => {
     if (chatHistoryRef.current) {
@@ -72,17 +61,8 @@ export default function Chat() {
   }, [messages]);
 
   const handleSendMessage = () => {
-    if (inputMessage.trim()) {
-      const newMessage: ChatMessage = {
-        id: Date.now().toString(),
-        content: inputMessage,
-        timestamp: "Just now",
-        author: "You",
-        avatar: "Y",
-        color: "from-indigo-500 to-purple-600"
-      };
-      
-      setMessages(prev => [...prev, newMessage]);
+    if (inputMessage.trim() && !createMessageMutation.isPending) {
+      createMessageMutation.mutate(inputMessage);
       setInputMessage("");
     }
   };
@@ -179,34 +159,44 @@ export default function Chat() {
               ref={chatHistoryRef}
               className="chat-history flex-1 overflow-y-auto p-6 space-y-4"
             >
-              {messages.map((message, index) => (
-                <div key={message.id} className="chat-message animate-slide-up">
-                  <div className="flex items-start space-x-3">
-                    <div className={`w-8 h-8 bg-gradient-to-r ${message.color} rounded-full flex items-center justify-center text-white text-xs font-medium`}>
-                      {message.avatar}
-                    </div>
-                    <div className="flex-1">
-                      <div className={`message-bubble ${index % 2 === 0 ? 'bg-gray-100' : 'bg-purple-100'} rounded-2xl rounded-tl-sm px-4 py-3 max-w-sm`}>
-                        <p className="text-gray-900 text-sm">{message.content}</p>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-gray-500">Loading messages...</div>
+                </div>
+              ) : (
+                <>
+                  {messages.map((message, index) => (
+                    <div key={message.id} className="chat-message animate-slide-up">
+                      <div className="flex items-start space-x-3">
+                        <div className={`w-8 h-8 bg-gradient-to-r ${message.color} rounded-full flex items-center justify-center text-white text-xs font-medium`}>
+                          {message.avatar}
+                        </div>
+                        <div className="flex-1">
+                          <div className={`message-bubble ${index % 2 === 0 ? 'bg-gray-100' : 'bg-purple-100'} rounded-2xl rounded-tl-sm px-4 py-3 max-w-sm`}>
+                            <p className="text-gray-900 text-sm">{message.content}</p>
+                          </div>
+                          <div className="mt-1 text-xs text-gray-500 ml-1">
+                            <span className="font-medium">{message.author}</span> • {message.timestamp}
+                          </div>
+                        </div>
                       </div>
-                      <div className="mt-1 text-xs text-gray-500 ml-1">{message.timestamp}</div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
 
-              {/* Typing Indicator */}
-              {isTyping && (
-                <div className="flex items-start space-x-3 animate-pulse">
-                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                  <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                  {/* Typing Indicator */}
+                  {(isTyping || createMessageMutation.isPending) && (
+                    <div className="flex items-start space-x-3 animate-pulse">
+                      <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                      <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  )}
+                </>
               )}
             </div>
 
@@ -252,9 +242,10 @@ export default function Chat() {
                 </div>
                 <Button
                   onClick={handleSendMessage}
-                  className="send-button bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105"
+                  disabled={createMessageMutation.isPending || !inputMessage.trim()}
+                  className="send-button bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span>Send</span>
+                  <span>{createMessageMutation.isPending ? "Sending..." : "Send"}</span>
                   <Send size={16} className="ml-2" />
                 </Button>
               </div>

@@ -41,13 +41,14 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend Components
 1. **Server Entry** (`server/index.ts`): Express server setup with middleware and error handling
-2. **Routes** (`server/routes.ts`): API route definitions (currently minimal setup)
-3. **Storage Layer** (`server/storage.ts`): Data access layer with both in-memory and database implementations
-4. **Vite Integration** (`server/vite.ts`): Development server integration with Vite for HMR
+2. **API Routes** (`server/routes.ts`): REST API endpoints for chat messages with full CRUD operations
+3. **Database Layer** (`server/db.ts`): Neon PostgreSQL connection with Drizzle ORM integration
+4. **Storage Layer** (`server/storage.ts`): DatabaseStorage implementation with chat message and user management
+5. **Vite Integration** (`server/vite.ts`): Development server integration with Vite for HMR
 
 ### Shared Components
-1. **Database Schema** (`shared/schema.ts`): Drizzle schema definitions for users table
-2. **Type Definitions**: Shared TypeScript types between frontend and backend
+1. **Database Schema** (`shared/schema.ts`): Complete Drizzle schema with users and messages tables, including relations
+2. **Type Definitions**: Shared TypeScript types for users, messages, and insert schemas with Zod validation
 
 ## Data Flow
 
