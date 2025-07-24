@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageSchema } from "@shared/schema";
+import { insertMessageSchema, insertPostSchema, insertCommentSchema } from "@shared/schema";
 import { fromZodError } from 'zod-validation-error';
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -60,6 +60,159 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating message:", error);
       res.status(500).json({ error: "Failed to create message" });
+    }
+  });
+
+  // Posts API routes
+  
+  // Get all posts
+  app.get("/api/posts", async (req, res) => {
+    try {
+      const posts = await storage.getPosts();
+      
+      // Transform to match frontend interface
+      const formattedPosts = posts.map(post => ({
+        id: post.id.toString(),
+        title: post.title,
+        content: post.content,
+        timestamp: formatTimestamp(post.timestamp),
+        author: post.user.username,
+        avatar: post.user.avatar,
+        color: post.user.color,
+        likes: post.likes,
+        commentCount: post.commentCount
+      }));
+      
+      res.json(formattedPosts);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ error: "Failed to fetch posts" });
+    }
+  });
+
+  // Create a new post
+  app.post("/api/posts", async (req, res) => {
+    try {
+      const result = insertPostSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          error: fromZodError(result.error).message 
+        });
+      }
+
+      const post = await storage.createPost(result.data);
+      const user = await storage.getUser(result.data.userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Return formatted post
+      const formattedPost = {
+        id: post.id.toString(),
+        title: post.title,
+        content: post.content,
+        timestamp: formatTimestamp(post.timestamp),
+        author: user.username,
+        avatar: user.avatar,
+        color: user.color,
+        likes: post.likes,
+        commentCount: 0
+      };
+
+      res.status(201).json(formattedPost);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      res.status(500).json({ error: "Failed to create post" });
+    }
+  });
+
+  // Get post by ID with comments
+  app.get("/api/posts/:id", async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const post = await storage.getPostById(postId);
+      
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      const comments = await storage.getCommentsByPostId(postId);
+      
+      const formattedPost = {
+        id: post.id.toString(),
+        title: post.title,
+        content: post.content,
+        timestamp: formatTimestamp(post.timestamp),
+        author: post.user.username,
+        avatar: post.user.avatar,
+        color: post.user.color,
+        likes: post.likes,
+        comments: comments.map(comment => ({
+          id: comment.id.toString(),
+          content: comment.content,
+          timestamp: formatTimestamp(comment.timestamp),
+          author: comment.user.username,
+          avatar: comment.user.avatar,
+          color: comment.user.color
+        }))
+      };
+
+      res.json(formattedPost);
+    } catch (error) {
+      console.error("Error fetching post:", error);
+      res.status(500).json({ error: "Failed to fetch post" });
+    }
+  });
+
+  // Add comment to post
+  app.post("/api/posts/:id/comments", async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      const result = insertCommentSchema.safeParse({
+        ...req.body,
+        postId
+      });
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          error: fromZodError(result.error).message 
+        });
+      }
+
+      const comment = await storage.createComment(result.data);
+      const user = await storage.getUser(result.data.userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Return formatted comment
+      const formattedComment = {
+        id: comment.id.toString(),
+        content: comment.content,
+        timestamp: formatTimestamp(comment.timestamp),
+        author: user.username,
+        avatar: user.avatar,
+        color: user.color
+      };
+
+      res.status(201).json(formattedComment);
+    } catch (error) {
+      console.error("Error creating comment:", error);
+      res.status(500).json({ error: "Failed to create comment" });
+    }
+  });
+
+  // Like a post
+  app.post("/api/posts/:id/like", async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      await storage.likePost(postId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error liking post:", error);
+      res.status(500).json({ error: "Failed to like post" });
     }
   });
 
