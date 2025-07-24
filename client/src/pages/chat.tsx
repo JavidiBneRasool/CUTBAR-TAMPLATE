@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MessageCircle, Send, Search, Bell, Paperclip, Image, Mic, Smile, MoreVertical, ArrowDown } from "lucide-react";
+import { MessageCircle, Send, Search, Bell, Paperclip, Image, Mic, Smile, MoreVertical, ArrowDown, Upload, Link } from "lucide-react";
 
 interface ChatMessage {
   id: string;
@@ -17,35 +17,43 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "1",
-      content: "Hello! This is a sample message in the chat interface.",
-      timestamp: "2 minutes ago",
-      author: "A",
-      avatar: "A",
-      color: "from-blue-500 to-indigo-600"
-    },
-    {
-      id: "2",
-      content: "Thanks for checking out this modern chat theme! The design is responsive and smooth.",
-      timestamp: "1 minute ago",
-      author: "B",
-      avatar: "B",
-      color: "from-purple-500 to-pink-600"
-    },
-    {
-      id: "3",
-      content: "Perfect for blogger who wants to create an interactive community experience! 🚀",
-      timestamp: "30 seconds ago",
-      author: "C",
-      avatar: "C",
+      content: "Welcome to CUTBAR FINANCE community! Share your trading insights and market analysis here. 📈",
+      timestamp: "5 minutes ago",
+      author: "TraderPro",
+      avatar: "T",
       color: "from-green-500 to-emerald-600"
     },
     {
+      id: "2",
+      content: "Just uploaded my latest market report. Check out the bullish trend on tech stocks! 📊",
+      timestamp: "3 minutes ago",
+      author: "MarketGuru",
+      avatar: "M",
+      color: "from-blue-500 to-cyan-600"
+    },
+    {
+      id: "3",
+      content: "Great analysis! I've shared a link to my portfolio performance dashboard for everyone to review.",
+      timestamp: "2 minutes ago",
+      author: "FinanceWiz",
+      avatar: "F",
+      color: "from-purple-500 to-pink-600"
+    },
+    {
       id: "4",
-      content: "The animations and transitions make it feel so modern and professional!",
-      timestamp: "Just now",
-      author: "D",
-      avatar: "D",
+      content: "Love this community chat! Perfect for real-time financial discussions. Upload your charts and let's discuss! 💰",
+      timestamp: "1 minute ago",
+      author: "CryptoKing",
+      avatar: "C",
       color: "from-orange-500 to-red-600"
+    },
+    {
+      id: "5",
+      content: "The live background animations make this chat so engaging! Ready to share some investment tips. 🦋",
+      timestamp: "Just now",
+      author: "InvestorAce",
+      avatar: "I",
+      color: "from-teal-500 to-blue-600"
     }
   ]);
 
@@ -86,18 +94,39 @@ export default function Chat() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
+    <div className="min-h-screen relative overflow-hidden flex flex-col">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        {/* Water Flow Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-cyan-50 to-teal-100">
+          <div className="water-flow absolute inset-0"></div>
+        </div>
+        
+        {/* Flying Butterflies */}
+        <div className="butterflies-container absolute inset-0">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className={`butterfly butterfly-${i + 1} absolute`}>
+              <div className="butterfly-body"></div>
+              <div className="butterfly-wings">
+                <div className="wing wing-left"></div>
+                <div className="wing wing-right"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Header Section */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white/90 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl flex items-center justify-center">
                 <MessageCircle className="text-white" size={20} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Chat Blog</h1>
-                <p className="text-sm text-gray-500">Interactive conversations</p>
+                <h1 className="text-xl font-bold text-gray-900">CUTBAR FINANCE</h1>
+                <p className="text-sm text-gray-500">Community Chat</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -114,72 +143,20 @@ export default function Chat() {
       </header>
 
       {/* Main Chat Container */}
-      <main className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 py-6">
+      <main className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 py-6 relative z-10">
         
         {/* Welcome Message */}
         <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl mb-4 animate-bounce-gentle">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-2xl mb-4 animate-bounce-gentle">
             <MessageCircle className="text-white" size={24} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Interactive Chat</h2>
-          <p className="text-gray-600 max-w-md mx-auto">Start a conversation below. Your messages will appear in the chat history for an engaging blog experience.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to CUTBAR FINANCE</h2>
+          <p className="text-gray-600 max-w-md mx-auto">Join our community chat and share your financial insights. Upload links, images, and connect with fellow traders.</p>
         </div>
 
-        {/* Chat Input Section - Centered */}
-        <div className="mb-8">
-          <Card className="animate-slide-up shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      placeholder="Type your message here..."
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="chat-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
-                    />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-0">
-                        <Smile size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleSendMessage}
-                  className="send-button bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105"
-                >
-                  <span>Send</span>
-                  <Send size={16} className="ml-2" />
-                </Button>
-              </div>
-              
-              {/* Quick Actions */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                <div className="flex items-center space-x-3">
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-1">
-                    <Paperclip size={16} />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-1">
-                    <Image size={16} />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-1">
-                    <Mic size={16} />
-                  </Button>
-                </div>
-                <div className="text-xs text-gray-400">
-                  Press Enter to send
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Chat History/Lobby Section */}
-        <div className="flex-1">
-          <Card className="h-96 flex flex-col animate-slide-up shadow-lg">
+        {/* Chat History/Lobby Section - Centered */}
+        <div className="flex-1 mb-6">
+          <Card className="h-96 flex flex-col animate-slide-up shadow-lg bg-white/95 backdrop-blur-sm">
             
             {/* Chat Header */}
             <CardHeader className="px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
@@ -250,15 +227,74 @@ export default function Chat() {
             </div>
           </Card>
         </div>
+
+        {/* Chat Input Section - Fixed at Bottom */}
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 pt-4">
+          <Card className="animate-slide-up shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Share your financial insights, upload links or images..."
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      className="chat-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 text-gray-900 placeholder-gray-500"
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Button variant="ghost" size="sm" className="text-gray-400 hover:text-green-500 h-auto p-0">
+                        <Smile size={16} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleSendMessage}
+                  className="send-button bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105"
+                >
+                  <span>Send</span>
+                  <Send size={16} className="ml-2" />
+                </Button>
+              </div>
+              
+              {/* Upload and Link Actions */}
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-green-500 h-auto p-1">
+                    <Upload size={16} />
+                    <span className="ml-1 text-xs">Upload</span>
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-green-500 h-auto p-1">
+                    <Link size={16} />
+                    <span className="ml-1 text-xs">Link</span>
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-green-500 h-auto p-1">
+                    <Image size={16} />
+                    <span className="ml-1 text-xs">Image</span>
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-green-500 h-auto p-1">
+                    <Paperclip size={16} />
+                    <span className="ml-1 text-xs">File</span>
+                  </Button>
+                </div>
+                <div className="text-xs text-gray-400">
+                  Press Enter to send • Upload files & links
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-8">
+      <footer className="bg-white/90 backdrop-blur-sm border-t border-gray-200 relative z-10">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-600">
-                Powered by <span className="font-medium text-indigo-600">Blogger Chat Theme</span>
+                Powered by <span className="font-medium text-green-600">CUTBAR FINANCE</span>
               </div>
             </div>
             <div className="flex items-center space-x-6">

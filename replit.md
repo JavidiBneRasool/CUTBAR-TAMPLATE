@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack web application built with React on the frontend and Express.js on the backend. The application appears to be a chat interface with a modern UI built using shadcn/ui components and Tailwind CSS. The backend uses Drizzle ORM with PostgreSQL for data persistence and includes session management capabilities.
+This is a full-stack web application built with React on the frontend and Express.js on the backend. The application is the CUTBAR FINANCE community chat theme template for Google Blogger, featuring a modern chat interface with live animated backgrounds including colorful butterflies and water flow effects. Built using shadcn/ui components and Tailwind CSS with custom animations. The backend uses Drizzle ORM with PostgreSQL for data persistence and includes session management capabilities.
 
 ## User Preferences
 
@@ -28,10 +28,16 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Frontend Components
-1. **Chat Interface** (`client/src/pages/chat.tsx`): Main chat page with message display and input functionality
+1. **CUTBAR FINANCE Chat Interface** (`client/src/pages/chat.tsx`): Main financial community chat page with:
+   - Live animated background with colorful butterflies flying in slow motion
+   - Water flow gradient effects
+   - Chat input positioned at bottom with upload/link capabilities
+   - Centered chat lobby/history section
+   - Financial-themed sample messages and branding
 2. **UI Components** (`client/src/components/ui/`): Comprehensive set of reusable UI components from shadcn/ui
 3. **Query Client** (`client/src/lib/queryClient.ts`): Centralized API request handling with React Query
 4. **Routing**: Simple routing setup with chat as the main page and 404 handling
+5. **Custom Animations** (`client/src/index.css`): Extensive butterfly animation system with 8 different flight paths, wing flapping effects, and water flow gradients
 
 ### Backend Components
 1. **Server Entry** (`server/index.ts`): Express server setup with middleware and error handling
