@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <title><data:blog.pageTitle/></title>
+  <meta content='CUTBAR FINANCE - Community Chat Theme' name='description'/>
+  <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+  
+  <!-- Tailwind CSS -->
+  <script src='https://cdn.tailwindcss.com'></script>
+  
+  <style type="text/css">
+    /* Custom animations for butterflies */
+    .butterfly-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .butterfly {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .butterfly-body {
+      width: 3px;
+      height: 20px;
+      background: linear-gradient(to bottom, #2D1810, #1A0F08);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 10px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    }
+
+    .butterfly-body::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 6px;
+      background: linear-gradient(to bottom, #4A3228, #2D1810);
+      border-radius: 50% 50% 0 0;
+    }
+
+    .wing {
+      position: absolute;
+      width: 12px;
+      height: 16px;
+      border-radius: 60% 20% 70% 40%;
+      animation: wingFlap 0.4s ease-in-out infinite;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      box-shadow: inset 0 0 3px rgba(0,0,0,0.2), 0 1px 3px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .wing-left {
+      left: 0px;
+      top: 3px;
+      background: radial-gradient(ellipse at 30% 20%, #FFD700, #FF6B6B, #8A2BE2, #4169E1, #00CED1);
+      transform-origin: bottom right;
+    }
+
+    .wing-right {
+      right: 0px;
+      top: 3px;
+      background: radial-gradient(ellipse at 70% 20%, #FFD700, #FF6B6B, #8A2BE2, #4169E1, #00CED1);
+      transform-origin: bottom left;
+      animation-delay: 0.15s;
+    }
+
+    @keyframes wingFlap {
+      0%, 100% { transform: rotateY(0deg); }
+      50% { transform: rotateY(15deg); }
+    }
+
+    /* Butterfly flight paths */
+    .butterfly-1 { animation: butterfly1 25s linear infinite; }
+    .butterfly-2 { animation: butterfly2 30s linear infinite; }
+    .butterfly-3 { animation: butterfly3 35s linear infinite; }
+    .butterfly-4 { animation: butterfly4 28s linear infinite; }
+    .butterfly-5 { animation: butterfly5 32s linear infinite; }
+    .butterfly-6 { animation: butterfly6 27s linear infinite; }
+    .butterfly-7 { animation: butterfly7 33s linear infinite; }
+    .butterfly-8 { animation: butterfly8 29s linear infinite; }
+
+    @keyframes butterfly1 {
+      0% { left: -50px; top: 20%; }
+      25% { left: 25%; top: 10%; }
+      50% { left: 75%; top: 30%; }
+      75% { left: 50%; top: 15%; }
+      100% { left: 110%; top: 25%; }
+    }
+
+    @keyframes butterfly2 {
+      0% { left: -50px; top: 40%; }
+      25% { left: 30%; top: 60%; }
+      50% { left: 70%; top: 20%; }
+      75% { left: 40%; top: 70%; }
+      100% { left: 110%; top: 50%; }
+    }
+
+    @keyframes butterfly3 {
+      0% { left: -50px; top: 60%; }
+      25% { left: 20%; top: 40%; }
+      50% { left: 80%; top: 70%; }
+      75% { left: 60%; top: 30%; }
+      100% { left: 110%; top: 65%; }
+    }
+
+    @keyframes butterfly4 {
+      0% { left: -50px; top: 30%; }
+      25% { left: 35%; top: 80%; }
+      50% { left: 65%; top: 10%; }
+      75% { left: 25%; top: 50%; }
+      100% { left: 110%; top: 35%; }
+    }
+
+    @keyframes butterfly5 {
+      0% { left: -50px; top: 70%; }
+      25% { left: 45%; top: 20%; }
+      50% { left: 55%; top: 80%; }
+      75% { left: 75%; top: 40%; }
+      100% { left: 110%; top: 75%; }
+    }
+
+    @keyframes butterfly6 {
+      0% { left: -50px; top: 10%; }
+      25% { left: 60%; top: 50%; }
+      50% { left: 20%; top: 70%; }
+      75% { left: 85%; top: 25%; }
+      100% { left: 110%; top: 15%; }
+    }
+
+    @keyframes butterfly7 {
+      0% { left: -50px; top: 50%; }
+      25% { left: 15%; top: 30%; }
+      50% { left: 85%; top: 60%; }
+      75% { left: 30%; top: 80%; }
+      100% { left: 110%; top: 55%; }
+    }
+
+    @keyframes butterfly8 {
+      0% { left: -50px; top: 80%; }
+      25% { left: 70%; top: 15%; }
+      50% { left: 40%; top: 90%; }
+      75% { left: 90%; top: 60%; }
+      100% { left: 110%; top: 85%; }
+    }
+
+    /* Colorful variations for different butterflies */
+    .butterfly-1 .wing-left, .butterfly-1 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #FF4500, #FF6347, #DC143C, #8B0000, #FF69B4);
+    }
+    .butterfly-2 .wing-left, .butterfly-2 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #00FFFF, #40E0D0, #20B2AA, #008B8B, #4682B4);
+    }
+    .butterfly-3 .wing-left, .butterfly-3 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #32CD32, #00FF00, #7FFF00, #ADFF2F, #9ACD32);
+    }
+    .butterfly-4 .wing-left, .butterfly-4 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #FFD700, #FFA500, #FF8C00, #FF4500, #FF6347);
+    }
+    .butterfly-5 .wing-left, .butterfly-5 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #9932CC, #8A2BE2, #7B68EE, #6495ED, #4169E1);
+    }
+    .butterfly-6 .wing-left, .butterfly-6 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #FF69B4, #FF1493, #DC143C, #B22222, #8B0000);
+    }
+    .butterfly-7 .wing-left, .butterfly-7 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #00FA9A, #00FF7F, #32CD32, #228B22, #006400);
+    }
+    .butterfly-8 .wing-left, .butterfly-8 .wing-right {
+      background: radial-gradient(ellipse at 30% 20%, #FF7F50, #FF6347, #FF4500, #FF4500, #DC143C);
+    }
+
+    /* Sheep Icon Styles */
+    .sheep-icon {
+      position: relative;
+      display: inline-block;
+    }
+
+    .sheep-body {
+      width: 28px;
+      height: 24px;
+      background: linear-gradient(to bottom right, #f3f4f6, #ffffff, #e5e7eb);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .sheep-head {
+      width: 20px;
+      height: 18px;
+      background: linear-gradient(to bottom right, #f9fafb, #ffffff, #f3f4f6);
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+      left: 4px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .sheep-horn {
+      width: 3px;
+      height: 12px;
+      background: linear-gradient(to top, #d97706, #f59e0b, #fbbf24);
+      position: absolute;
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .sheep-horn-left {
+      left: 2px;
+      top: -10px;
+      transform: rotate(-15deg);
+    }
+
+    .sheep-horn-right {
+      right: 2px;
+      top: -10px;
+      transform: rotate(15deg);
+    }
+
+    .sheep-eye {
+      width: 2px;
+      height: 2px;
+      background: #000;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+    }
+
+    .sheep-eye-left { left: 5px; }
+    .sheep-eye-right { right: 5px; }
+
+    .sheep-nose {
+      width: 3px;
+      height: 2px;
+      background: #fca5a5;
+      border-radius: 50%;
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Water flow background */
+    .water-flow {
+      background: linear-gradient(45deg, 
+        rgba(59, 130, 246, 0.1) 0%,
+        rgba(147, 197, 253, 0.15) 25%,
+        rgba(34, 211, 238, 0.1) 50%,
+        rgba(125, 211, 252, 0.15) 75%,
+        rgba(59, 130, 246, 0.1) 100%);
+      animation: waterFlow 20s ease-in-out infinite;
+    }
+
+    @keyframes waterFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Blog post styling */
+    .blog-post {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .blog-post:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .comment-section {
+      background: rgba(249, 250, 251, 0.9);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    /* Hide default blogger elements */
+    .blogger-labels { display: none; }
+    .post-timestamp { display: none; }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .butterfly { width: 20px; height: 20px; }
+      .wing { width: 8px; height: 12px; }
+      .sheep-icon { transform: scale(0.8); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <div class="fixed inset-0 z-0">
+    <!-- Water Flow Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-100 via-cyan-50 to-teal-100">
+      <div class="water-flow absolute inset-0"></div>
+    </div>
+    
+    <!-- Flying Butterflies -->
+    <div class="butterfly-container">
+      <div class="butterfly butterfly-1">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-2">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-3">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-4">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-5">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-6">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-7">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+      <div class="butterfly butterfly-8">
+        <div class="butterfly-body"></div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Generated Banner -->
+  <div class="relative z-10 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 py-4 px-6 shadow-lg">
+    <div class="flex items-center justify-between max-w-6xl mx-auto">
+      <div class="flex items-center space-x-4">
+        <div class="sheep-icon animate-pulse">
+          <div class="sheep-body">
+            <div class="sheep-head">
+              <div class="sheep-horn sheep-horn-left"></div>
+              <div class="sheep-horn sheep-horn-right"></div>
+              <div class="sheep-eye sheep-eye-left"></div>
+              <div class="sheep-eye sheep-eye-right"></div>
+              <div class="sheep-nose"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white drop-shadow-lg">CUTBAR FINANCE</h1>
+          <p class="text-yellow-100 text-sm">Community Hub • Trading • Finance • Investment</p>
+        </div>
+      </div>
+      <div class="hidden md:flex space-x-6 text-white">
+        <div class="text-center">
+          <div class="text-xl font-bold">24/7</div>
+          <div class="text-xs">Live Blog</div>
+        </div>
+        <div class="text-center">
+          <div class="text-xl font-bold">500+</div>
+          <div class="text-xs">Active Readers</div>
+        </div>
+        <div class="text-center">
+          <div class="text-xl font-bold">🏆</div>
+          <div class="text-xs">Premium</div>  
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="relative z-10 max-w-4xl mx-auto px-4 py-8">
+    
+    <!-- Blog Header -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        <data:blog.title/>
+      </h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        <data:blog.metaDescription/>
+      </p>
+    </div>
+
+    <!-- Blog Posts -->
+    <b:section class='main' id='main' showaddelement='no'>
+      <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='1' visible='true'>
+        <b:includable id='main'>
+          <b:if cond='data:blog.pageType == "index"'>
+            <!-- Homepage: Show all posts -->
+            <b:loop values='data:posts' var='post'>
+              <article class="blog-post">
+                <div class="flex items-start space-x-4">
+                  <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
+                    <data:post.author.name.first/>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                      <a expr:href='data:post.link' class="hover:text-blue-600 transition-colors">
+                        <data:post.title/>
+                      </a>
+                    </h3>
+                    <div class="text-gray-600 mb-4">
+                      <data:post.snippet/>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center space-x-4">
+                        <button class="flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                          </svg>
+                          <span>Like</span>
+                        </button>
+                        <a expr:href='data:post.link + "#comments"' class="flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
+                          </svg>
+                          <span><data:post.numberOfComments/> Comments</span>
+                        </a>
+                        <button class="flex items-center space-x-1 text-gray-500 hover:text-green-500 transition-colors">
+                          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+                          </svg>
+                          <span>Share</span>
+                        </button>
+                      </div>
+                      <span class="text-xs text-gray-500">
+                        by <data:post.author.name/> • <data:post.timestamp/>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </b:loop>
+          <b:else/>
+            <!-- Single Post Page -->
+            <b:loop values='data:posts' var='post'>
+              <article class="blog-post">
+                <div class="flex items-start space-x-4 mb-6">
+                  <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold">
+                    <data:post.author.name.first/>
+                  </div>
+                  <div class="flex-1">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                      <data:post.title/>
+                    </h1>
+                    <div class="text-sm text-gray-500 mb-4">
+                      by <data:post.author.name/> • <data:post.timestamp/>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="prose max-w-none text-gray-700 mb-6">
+                  <data:post.body/>
+                </div>
+
+                <div class="flex items-center justify-between mb-6 pt-4 border-t border-gray-200">
+                  <div class="flex items-center space-x-4">
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-red-100 rounded-lg transition-colors">
+                      <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                      </svg>
+                      <span>Like this post</span>
+                    </button>
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-green-100 rounded-lg transition-colors">
+                      <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+                      </svg>
+                      <span>Share</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comment-section">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    Comments (<data:post.numberOfComments/>)
+                  </h3>
+                  
+                  <b:include name='comments'/>
+                </div>
+              </article>
+            </b:loop>
+          </b:if>
+        </b:includable>
+
+        <!-- Comments Template -->
+        <b:includable id='comments'>
+          <div id='comments'>
+            <b:if cond='data:post.allowComments'>
+              <b:loop values='data:post.comments' var='comment'>
+                <div class="flex items-start space-x-3 mb-4 p-3 bg-white rounded-lg">
+                  <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
+                    <data:comment.author.name.first/>
+                  </div>
+                  <div class="flex-1">
+                    <div class="bg-gray-50 rounded-lg px-3 py-2">
+                      <data:comment.body/>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
+                      <data:comment.author.name/> • <data:comment.timestamp/>
+                    </div>
+                  </div>
+                </div>
+              </b:loop>
+
+              <!-- Comment Form -->
+              <div class="mt-6 p-4 bg-white rounded-lg border-2 border-dashed border-gray-200">
+                <iframe allowtransparency='true' class='blogger-iframe-colorize' frameborder='0' height='410' id='comment-editor' scrolling='no' src='' width='100%'></iframe>
+              </div>
+            </b:if>
+          </div>
+        </b:includable>
+      </b:widget>
+    </b:section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 bg-gray-900 text-white py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <div class="flex items-center justify-center space-x-4 mb-4">
+        <div class="sheep-icon">
+          <div class="sheep-body">
+            <div class="sheep-head">
+              <div class="sheep-horn sheep-horn-left"></div>
+              <div class="sheep-horn sheep-horn-right"></div>
+              <div class="sheep-eye sheep-eye-left"></div>
+              <div class="sheep-eye sheep-eye-right"></div>
+              <div class="sheep-nose"></div>
+            </div>
+          </div>
+        </div>
+        <h3 class="text-xl font-bold">CUTBAR FINANCE</h3>
+      </div>
+      <p class="text-gray-400 mb-4">Your trusted source for financial insights and trading community discussions</p>
+      <div class="flex justify-center space-x-6 text-sm">
+        <a href="#" class="hover:text-yellow-400 transition-colors">About</a>
+        <a href="#" class="hover:text-yellow-400 transition-colors">Contact</a>
+        <a href="#" class="hover:text-yellow-400 transition-colors">Privacy</a>
+        <a href="#" class="hover:text-yellow-400 transition-colors">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="text/javascript">
+    // Add some interactivity for like buttons
+    document.addEventListener('DOMContentLoaded', function() {
+      const likeButtons = document.querySelectorAll('button[data-action="like"]');
+      likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          this.classList.add('animate-bounce');
+          setTimeout(() => {
+            this.classList.remove('animate-bounce');
+          }, 500);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
