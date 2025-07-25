@@ -1,16 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MessageCircle, Send, Search, Bell, Paperclip, Image, Mic, Smile, MoreVertical, ArrowDown, Upload, Link, Plus, Heart, Share, Edit3 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { SheepIcon } from "@/components/SheepIcon";
+import { MessageCircle, Send, Search, Bell, Paperclip, Image, Mic, Smile, MoreVertical, ArrowDown } from "lucide-react";
 
 interface ChatMessage {
   id: string;
@@ -21,137 +13,45 @@ interface ChatMessage {
   color: string;
 }
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  timestamp: string;
-  author: string;
-  avatar: string;
-  color: string;
-  likes: number;
-  commentCount: number;
-}
-
-interface PostWithComments extends Post {
-  comments: Comment[];
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  timestamp: string;
-  author: string;
-  avatar: string;
-  color: string;
-}
-
 export default function Chat() {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: "1",
+      content: "Hello! This is a sample message in the chat interface.",
+      timestamp: "2 minutes ago",
+      author: "A",
+      avatar: "A",
+      color: "from-blue-500 to-indigo-600"
+    },
+    {
+      id: "2",
+      content: "Thanks for checking out this modern chat theme! The design is responsive and smooth.",
+      timestamp: "1 minute ago",
+      author: "B",
+      avatar: "B",
+      color: "from-purple-500 to-pink-600"
+    },
+    {
+      id: "3",
+      content: "Perfect for blogger who wants to create an interactive community experience! 🚀",
+      timestamp: "30 seconds ago",
+      author: "C",
+      avatar: "C",
+      color: "from-green-500 to-emerald-600"
+    },
+    {
+      id: "4",
+      content: "The animations and transitions make it feel so modern and professional!",
+      timestamp: "Just now",
+      author: "D",
+      avatar: "D",
+      color: "from-orange-500 to-red-600"
+    }
+  ]);
+
   const [inputMessage, setInputMessage] = useState("");
-  const [postTitle, setPostTitle] = useState("");
-  const [postContent, setPostContent] = useState("");
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [commentContent, setCommentContent] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [activeTab, setActiveTab] = useState("chat");
-  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(true);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-
-  // Fetch messages from database
-  const { data: messages = [], isLoading } = useQuery<ChatMessage[]>({
-    queryKey: ['/api/messages'],
-    refetchInterval: 5000, // Refresh every 5 seconds for live updates
-  });
-
-  // Fetch posts from database
-  const { data: posts = [], isLoading: postsLoading } = useQuery<Post[]>({
-    queryKey: ['/api/posts'],
-    refetchInterval: 10000, // Refresh every 10 seconds
-  });
-
-  // Fetch individual post with comments
-  const { data: postWithComments } = useQuery<PostWithComments>({
-    queryKey: ['/api/posts', selectedPost],
-    enabled: !!selectedPost,
-  });
-
-  // Create message mutation
-  const createMessageMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const response = await apiRequest('POST', '/api/messages', {
-        content,
-        userId: 1 // Using TraderPro as default user for demo
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/messages'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
-    }
-  });
-
-  // Create post mutation
-  const createPostMutation = useMutation({
-    mutationFn: async ({ title, content }: { title: string; content: string }) => {
-      const response = await apiRequest('POST', '/api/posts', {
-        title,
-        content,
-        userId: 1
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
-      setIsCreatePostOpen(false);
-      setPostTitle("");
-      setPostContent("");
-      toast({
-        title: "Success",
-        description: "Post created successfully!",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to create post. Please try again.",
-        variant: "destructive",
-      });
-    }
-  });
-
-  // Like post mutation
-  const likePostMutation = useMutation({
-    mutationFn: async (postId: string) => {
-      const response = await apiRequest('POST', `/api/posts/${postId}/like`, {});
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
-    }
-  });
-
-  // Create comment mutation
-  const createCommentMutation = useMutation({
-    mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
-      const response = await apiRequest('POST', `/api/posts/${postId}/comments`, {
-        content,
-        userId: 1
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/posts', selectedPost] });
-      setCommentContent("");
-    }
-  });
 
   const scrollToBottom = () => {
     if (chatHistoryRef.current) {
@@ -164,25 +64,18 @@ export default function Chat() {
   }, [messages]);
 
   const handleSendMessage = () => {
-    if (inputMessage.trim() && !createMessageMutation.isPending) {
-      createMessageMutation.mutate(inputMessage);
+    if (inputMessage.trim()) {
+      const newMessage: ChatMessage = {
+        id: Date.now().toString(),
+        content: inputMessage,
+        timestamp: "Just now",
+        author: "You",
+        avatar: "Y",
+        color: "from-indigo-500 to-purple-600"
+      };
+      
+      setMessages(prev => [...prev, newMessage]);
       setInputMessage("");
-    }
-  };
-
-  const handleCreatePost = () => {
-    if (postTitle.trim() && postContent.trim() && !createPostMutation.isPending) {
-      createPostMutation.mutate({ title: postTitle, content: postContent });
-    }
-  };
-
-  const handleLikePost = (postId: string) => {
-    likePostMutation.mutate(postId);
-  };
-
-  const handleAddComment = () => {
-    if (commentContent.trim() && selectedPost && !createCommentMutation.isPending) {
-      createCommentMutation.mutate({ postId: selectedPost, content: commentContent });
     }
   };
 
@@ -193,324 +86,201 @@ export default function Chat() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        {/* Water Flow Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-cyan-50 to-teal-100">
-          <div className="water-flow absolute inset-0"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
+      {/* Header Section */}
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <MessageCircle className="text-white" size={20} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Chat Blog</h1>
+                <p className="text-sm text-gray-500">Interactive conversations</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-indigo-600">
+                <Search size={18} />
+              </Button>
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-indigo-600">
+                <Bell size={18} />
+              </Button>
+              <div className="w-8 h-8 bg-gray-300 rounded-full animate-pulse"></div>
+            </div>
+          </div>
         </div>
+      </header>
+
+      {/* Main Chat Container */}
+      <main className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 py-6">
         
-        {/* Flying Butterflies */}
-        <div className="butterflies-container absolute inset-0">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className={`butterfly butterfly-${i + 1} absolute`}>
-              <div className="butterfly-body"></div>
-              <div className="butterfly-wings">
-                <div className="wing wing-left"></div>
-                <div className="wing wing-right"></div>
-              </div>
-            </div>
-          ))}
+        {/* Welcome Message */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl mb-4 animate-bounce-gentle">
+            <MessageCircle className="text-white" size={24} />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Interactive Chat</h2>
+          <p className="text-gray-600 max-w-md mx-auto">Start a conversation below. Your messages will appear in the chat history for an engaging blog experience.</p>
         </div>
-      </div>
 
-      {/* AI Generated Banner */}
-      <div className="relative z-10 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 py-4 px-6 shadow-lg">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
-          <div className="flex items-center space-x-4">
-            <SheepIcon size={48} className="animate-pulse" />
-            <div>
-              <h1 className="text-2xl font-bold text-white drop-shadow-lg">CUTBAR FINANCE</h1>
-              <p className="text-yellow-100 text-sm">Community Hub • Trading • Finance • Investment</p>
-            </div>
-          </div>
-          <div className="hidden md:flex space-x-6 text-white">
-            <div className="text-center">
-              <div className="text-xl font-bold">24/7</div>
-              <div className="text-xs">Live Chat</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold">500+</div>
-              <div className="text-xs">Active Traders</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xl font-bold">🏆</div>
-              <div className="text-xs">Premium</div>  
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content with Tabs */}
-      <div className="flex-1 relative z-10 max-w-6xl mx-auto w-full px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="flex justify-between items-center mb-6">
-            <TabsList className="bg-white/90 backdrop-blur-sm shadow-lg rounded-xl border">
-              <TabsTrigger value="chat" className="flex items-center space-x-2 px-6 py-2">
-                <MessageCircle size={18} />
-                <span>Live Chat</span>
-              </TabsTrigger>
-              <TabsTrigger value="posts" className="flex items-center space-x-2 px-6 py-2">
-                <Edit3 size={18} />
-                <span>Community Posts</span>
-              </TabsTrigger>
-            </TabsList>
-
-            {activeTab === "posts" && (
-              <Dialog open={isCreatePostOpen} onOpenChange={setIsCreatePostOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg">
-                    <Plus size={18} className="mr-2" />
-                    Create Post
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Create New Post</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 pt-4">
-                    <div>
-                      <Label htmlFor="title">Title</Label>
-                      <Input
-                        id="title"
-                        value={postTitle}
-                        onChange={(e) => setPostTitle(e.target.value)}
-                        placeholder="Enter post title..."
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="content">Content</Label>
-                      <Textarea
-                        id="content"
-                        value={postContent}
-                        onChange={(e) => setPostContent(e.target.value)}
-                        placeholder="What's on your mind about finance and trading?"
-                        className="mt-1 min-h-[100px]"
-                      />
-                    </div>
-                    <Button 
-                      onClick={handleCreatePost} 
-                      disabled={createPostMutation.isPending || !postTitle.trim() || !postContent.trim()}
-                      className="w-full"
-                    >
-                      {createPostMutation.isPending ? "Creating..." : "Create Post"}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-
-          {/* Chat Tab Content */}
-          <TabsContent value="chat" className="space-y-6">
-            <Card className="h-96 flex flex-col shadow-lg bg-white/95 backdrop-blur-sm">
-              <CardHeader className="px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">Live Chat</h3>
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-gray-500">Live</span>
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <div 
-                ref={chatHistoryRef}
-                className="flex-1 overflow-y-auto p-6 space-y-4"
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-gray-500">Loading messages...</div>
-                  </div>
-                ) : (
-                  <>
-                    {messages.map((message) => (
-                      <div key={message.id} className="flex items-start space-x-3">
-                        <div className={`w-8 h-8 bg-gradient-to-r ${message.color} rounded-full flex items-center justify-center text-white text-xs font-medium`}>
-                          {message.avatar}
-                        </div>
-                        <div className="flex-1">
-                          <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 max-w-sm">
-                            <p className="text-gray-900 text-sm">{message.content}</p>
-                          </div>
-                          <div className="mt-1 text-xs text-gray-500 ml-1">
-                            <span className="font-medium">{message.author}</span> • {message.timestamp}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-
-                    {createMessageMutation.isPending && (
-                      <div className="flex items-start space-x-3 animate-pulse">
-                        <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                        <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </Card>
-
-            {/* Chat Input */}
-            <Card className="shadow-lg bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="flex-1">
+        {/* Chat Input Section - Centered */}
+        <div className="mb-8">
+          <Card className="animate-slide-up shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="flex-1">
+                  <div className="relative">
                     <Input
                       type="text"
-                      placeholder="Share your financial insights..."
+                      placeholder="Type your message here..."
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl"
+                      className="chat-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                     />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-0">
+                        <Smile size={16} />
+                      </Button>
+                    </div>
                   </div>
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={createMessageMutation.isPending || !inputMessage.trim()}
-                    className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl"
-                  >
-                    <Send size={16} className="mr-2" />
-                    {createMessageMutation.isPending ? "Sending..." : "Send"}
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Posts Tab Content */}
-          <TabsContent value="posts" className="space-y-6">
-            {postsLoading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-gray-500">Loading posts...</div>
+                <Button
+                  onClick={handleSendMessage}
+                  className="send-button bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105"
+                >
+                  <span>Send</span>
+                  <Send size={16} className="ml-2" />
+                </Button>
               </div>
-            ) : (
-              <div className="grid gap-4">
-                {posts.length === 0 ? (
-                  <Card className="p-8 text-center bg-white/95 backdrop-blur-sm">
-                    <div className="text-gray-500">
-                      <Edit3 size={48} className="mx-auto mb-4 opacity-50" />
-                      <h3 className="text-lg font-medium mb-2">No posts yet</h3>
-                      <p className="text-sm">Be the first to share your financial insights with the community!</p>
-                    </div>
-                  </Card>
-                ) : (
-                  posts.map((post) => (
-                    <Card key={post.id} className="bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-start space-x-4">
-                          <div className={`w-10 h-10 bg-gradient-to-r ${post.color} rounded-full flex items-center justify-center text-white text-sm font-medium`}>
-                            {post.avatar}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="font-semibold text-gray-900">{post.title}</h3>
-                              <span className="text-xs text-gray-500">{post.timestamp}</span>
-                            </div>
-                            <p className="text-gray-700 mb-4">{post.content}</p>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-4">
-                                <Button
-                                  onClick={() => handleLikePost(post.id)}
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-gray-500 hover:text-red-500"
-                                >
-                                  <Heart size={16} className="mr-1" />
-                                  {post.likes}
-                                </Button>
-                                <Button
-                                  onClick={() => setSelectedPost(post.id)}
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-gray-500 hover:text-blue-500"
-                                >
-                                  <MessageCircle size={16} className="mr-1" />
-                                  {post.commentCount}
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-gray-500 hover:text-green-500"
-                                >
-                                  <Share size={16} className="mr-1" />
-                                  Share
-                                </Button>
-                              </div>
-                              <span className="text-xs text-gray-500">by {post.author}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Post Details Dialog */}
-      {selectedPost && postWithComments && (
-        <Dialog open={!!selectedPost} onOpenChange={() => setSelectedPost(null)}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{postWithComments.title}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <p className="text-gray-700">{postWithComments.content}</p>
               
-              <div className="border-t pt-4">
-                <h4 className="font-medium mb-4">Comments ({postWithComments.comments?.length || 0})</h4>
-                
-                <div className="space-y-3 mb-4">
-                  {postWithComments.comments?.map((comment) => (
-                    <div key={comment.id} className="flex items-start space-x-3">
-                      <div className={`w-8 h-8 bg-gradient-to-r ${comment.color} rounded-full flex items-center justify-center text-white text-xs font-medium`}>
-                        {comment.avatar}
-                      </div>
-                      <div className="flex-1">
-                        <div className="bg-gray-100 rounded-lg px-3 py-2">
-                          <p className="text-sm text-gray-900">{comment.content}</p>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {comment.author} • {comment.timestamp}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex space-x-2">
-                  <Input
-                    placeholder="Add a comment..."
-                    value={commentContent}
-                    onChange={(e) => setCommentContent(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button
-                    onClick={handleAddComment}
-                    disabled={createCommentMutation.isPending || !commentContent.trim()}
-                  >
-                    {createCommentMutation.isPending ? "Adding..." : "Comment"}
+              {/* Quick Actions */}
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-1">
+                    <Paperclip size={16} />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-1">
+                    <Image size={16} />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-indigo-500 h-auto p-1">
+                    <Mic size={16} />
                   </Button>
                 </div>
+                <div className="text-xs text-gray-400">
+                  Press Enter to send
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Chat History/Lobby Section */}
+        <div className="flex-1">
+          <Card className="h-96 flex flex-col animate-slide-up shadow-lg">
+            
+            {/* Chat Header */}
+            <CardHeader className="px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-gray-900">Chat History</h3>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-gray-500">Live</span>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600 h-auto p-1">
+                    <MoreVertical size={14} />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+
+            {/* Messages Container */}
+            <div 
+              ref={chatHistoryRef}
+              className="chat-history flex-1 overflow-y-auto p-6 space-y-4"
+            >
+              {messages.map((message, index) => (
+                <div key={message.id} className="chat-message animate-slide-up">
+                  <div className="flex items-start space-x-3">
+                    <div className={`w-8 h-8 bg-gradient-to-r ${message.color} rounded-full flex items-center justify-center text-white text-xs font-medium`}>
+                      {message.avatar}
+                    </div>
+                    <div className="flex-1">
+                      <div className={`message-bubble ${index % 2 === 0 ? 'bg-gray-100' : 'bg-purple-100'} rounded-2xl rounded-tl-sm px-4 py-3 max-w-sm`}>
+                        <p className="text-gray-900 text-sm">{message.content}</p>
+                      </div>
+                      <div className="mt-1 text-xs text-gray-500 ml-1">{message.timestamp}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Typing Indicator */}
+              {isTyping && (
+                <div className="flex items-start space-x-3 animate-pulse">
+                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                  <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Chat Footer */}
+            <div className="px-6 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>{messages.length} messages</span>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={scrollToBottom}
+                  className="hover:text-indigo-600 transition-colors duration-200 h-auto p-0 text-xs"
+                >
+                  <span>Scroll to bottom</span>
+                  <ArrowDown size={12} className="ml-1" />
+                </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      )}
+          </Card>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-8">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-600">
+                Powered by <span className="font-medium text-indigo-600">Blogger Chat Theme</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-6">
+              <a href="#" className="text-gray-500 hover:text-indigo-600 transition-colors duration-200">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                </svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-indigo-600 transition-colors duration-200">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-indigo-600 transition-colors duration-200">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

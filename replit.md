@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack web application built with React on the frontend and Express.js on the backend. The application is the CUTBAR FINANCE community chat theme template for Google Blogger, featuring a modern chat interface with live animated backgrounds including colorful butterflies and water flow effects. Built using shadcn/ui components and Tailwind CSS with custom animations. The backend uses Drizzle ORM with PostgreSQL for data persistence and includes session management capabilities.
+This is a full-stack web application built with React on the frontend and Express.js on the backend. The application appears to be a chat interface with a modern UI built using shadcn/ui components and Tailwind CSS. The backend uses Drizzle ORM with PostgreSQL for data persistence and includes session management capabilities.
 
 ## User Preferences
 
@@ -28,27 +28,20 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Frontend Components
-1. **CUTBAR FINANCE Chat Interface** (`client/src/pages/chat.tsx`): Main financial community chat page with:
-   - Live animated background with colorful butterflies flying in slow motion
-   - Water flow gradient effects
-   - Chat input positioned at bottom with upload/link capabilities
-   - Centered chat lobby/history section
-   - Financial-themed sample messages and branding
+1. **Chat Interface** (`client/src/pages/chat.tsx`): Main chat page with message display and input functionality
 2. **UI Components** (`client/src/components/ui/`): Comprehensive set of reusable UI components from shadcn/ui
 3. **Query Client** (`client/src/lib/queryClient.ts`): Centralized API request handling with React Query
 4. **Routing**: Simple routing setup with chat as the main page and 404 handling
-5. **Custom Animations** (`client/src/index.css`): Extensive butterfly animation system with 8 different flight paths, wing flapping effects, and water flow gradients
 
 ### Backend Components
 1. **Server Entry** (`server/index.ts`): Express server setup with middleware and error handling
-2. **API Routes** (`server/routes.ts`): REST API endpoints for chat messages with full CRUD operations
-3. **Database Layer** (`server/db.ts`): Neon PostgreSQL connection with Drizzle ORM integration
-4. **Storage Layer** (`server/storage.ts`): DatabaseStorage implementation with chat message and user management
-5. **Vite Integration** (`server/vite.ts`): Development server integration with Vite for HMR
+2. **Routes** (`server/routes.ts`): API route definitions (currently minimal setup)
+3. **Storage Layer** (`server/storage.ts`): Data access layer with both in-memory and database implementations
+4. **Vite Integration** (`server/vite.ts`): Development server integration with Vite for HMR
 
 ### Shared Components
-1. **Database Schema** (`shared/schema.ts`): Complete Drizzle schema with users and messages tables, including relations
-2. **Type Definitions**: Shared TypeScript types for users, messages, and insert schemas with Zod validation
+1. **Database Schema** (`shared/schema.ts`): Drizzle schema definitions for users table
+2. **Type Definitions**: Shared TypeScript types between frontend and backend
 
 ## Data Flow
 
